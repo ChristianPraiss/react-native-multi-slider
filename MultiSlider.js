@@ -27,6 +27,7 @@ export default class MultiSlider extends React.Component {
     touchDimensions: PropTypes.object,
 
     customMarker: PropTypes.func,
+    customTrack: PropTypes.func,
 
     customMarkerLeft: PropTypes.func,
     customMarkerRight: PropTypes.func,
@@ -94,10 +95,10 @@ export default class MultiSlider extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.optionsArray = this.props.optionsArray ||
       createArray(this.props.min, this.props.max, this.props.step);
     this.stepLength = this.props.sliderLength / this.optionsArray.length;
+
 
     var initialValues = this.props.values.map(value =>
       valueToPosition(value, this.optionsArray, this.props.sliderLength));
@@ -119,7 +120,9 @@ export default class MultiSlider extends React.Component {
         onStartShouldSetPanResponder: (evt, gestureState) => true,
         onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
         onMoveShouldSetPanResponder: (evt, gestureState) => true,
-        onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+        onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+          return true
+        },
         onPanResponderGrant: (evt, gestureState) => start(),
         onPanResponderMove: (evt, gestureState) => move(gestureState),
         onPanResponderTerminationRequest: (evt, gestureState) => false,
@@ -354,6 +357,7 @@ export default class MultiSlider extends React.Component {
       : unselectedStyle;
     const Marker = this.props.customMarker;
 
+    const Track = this.props.customTrack || View
     const MarkerLeft = this.props.customMarkerLeft;
     const MarkerRight = this.props.customMarkerRight;
     const isMarkersSeparated = this.props.isMarkersSeparated || false;
@@ -383,14 +387,15 @@ export default class MultiSlider extends React.Component {
     return (
       <View style={containerStyle}>
         <View style={[styles.fullTrack, { width: sliderLength }]}>
-          <View
+          <Track
             style={[
               styles.track,
               this.props.trackStyle,
               trackOneStyle,
-              { width: trackOneLength },
+              { width: this.props.customTrack ? sliderLength : trackOneLength },
             ]}
           />
+          {this.props.customTrack ? null :
           <View
             style={[
               styles.track,
@@ -398,7 +403,7 @@ export default class MultiSlider extends React.Component {
               trackTwoStyle,
               { width: trackTwoLength },
             ]}
-          />
+          />}
           {twoMarkers &&
             <View
               style={[
@@ -420,6 +425,12 @@ export default class MultiSlider extends React.Component {
               style={[styles.touch, touchStyle]}
               ref={component => this._markerOne = component}
               {...this._panResponderOne.panHandlers}
+              hitSlop={{
+                left: width / 2,
+                right: width / 2,
+                top: height / 2,
+                bottom: height / 2
+              }}
             >
               {isMarkersSeparated === false ?
                 <Marker
