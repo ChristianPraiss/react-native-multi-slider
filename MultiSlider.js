@@ -27,7 +27,9 @@ export default class MultiSlider extends React.Component {
     touchDimensions: PropTypes.object,
 
     customMarker: PropTypes.func,
+    customMarkerProps: PropTypes.object,
     customTrack: PropTypes.func,
+    customTrackProps: PropTypes.object,
 
     customMarkerLeft: PropTypes.func,
     customMarkerRight: PropTypes.func,
@@ -388,6 +390,7 @@ export default class MultiSlider extends React.Component {
       <View style={containerStyle}>
         <View style={[styles.fullTrack, { width: sliderLength }]}>
           <Track
+          {...this.props.customTrackProps}
             style={[
               styles.track,
               this.props.trackStyle,
@@ -434,6 +437,7 @@ export default class MultiSlider extends React.Component {
             >
               {isMarkersSeparated === false ?
                 <Marker
+                {...this.props.customMarkerProps}
                   enabled={this.props.enabledOne}
                   pressed={this.state.onePressed}
                   markerStyle={[styles.marker, this.props.markerStyle]}
@@ -444,6 +448,7 @@ export default class MultiSlider extends React.Component {
                 />
                 :
                 <MarkerLeft
+                {...this.props.customMarkerProps}
                   enabled={this.props.enabledOne}
                   pressed={this.state.onePressed}
                   markerStyle={[styles.marker, this.props.markerStyle]}
@@ -466,6 +471,7 @@ export default class MultiSlider extends React.Component {
               >
                 {isMarkersSeparated === false ?
                   <Marker
+                  {...this.props.customMarkerProps}
                     pressed={this.state.twoPressed}
                     markerStyle={this.props.markerStyle}
                     pressedMarkerStyle={this.props.pressedMarkerStyle}
@@ -476,6 +482,7 @@ export default class MultiSlider extends React.Component {
                   />
                   :
                   <MarkerRight
+                  {...this.props.customMarkerProps}
                     pressed={this.state.twoPressed}
                     markerStyle={this.props.markerStyle}
                     pressedMarkerStyle={this.props.pressedMarkerStyle}
